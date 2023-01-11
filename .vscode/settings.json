@@ -1,0 +1,12 @@
+{
+	"cmake.configureArgs": [
+		// "-DCMAKE_TOOLCHAIN_FILE=${env:VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake",
+		"-DBUILD_TESTING=TRUE",
+		"-DBUILD_COVERAGE=TRUE",
+		"-DQT_VERSION=5"
+	],
+	"files.associations": {
+		"memory": "cpp"
+	},
+	"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}
