@@ -1,4 +1,4 @@
-set(SOURCES qnodeeditor.cpp)
+set(SOURCES qnodeeditor.cpp qnode_tree_model.cpp)
 set(HEADERS)
 set(RESOURCES qnodeeditor_resources.qrc)
 
