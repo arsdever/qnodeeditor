@@ -56,5 +56,8 @@ int main(int argc, char** argv)
 
     configureColorScheme();
 
+    QNodeEditor editor;
+    editor.show();
+
     return app.exec();
 }
