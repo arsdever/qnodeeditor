@@ -1,6 +1,8 @@
 #include <QApplication>
+#include <QListView>
 
 #include "qnodeeditor/qnodeeditor.hpp"
+#include "qnodeeditor/qnodeeditor_tree.hpp"
 
 void configureColorScheme()
 {
@@ -48,6 +50,13 @@ void configureColorScheme()
 #endif
 }
 
+void populateModel(std::shared_ptr<QNodeEditorTree> tree)
+{
+    uint64_t node1Id = tree->addNode();
+    uint64_t node2Id = tree->addNode();
+    tree->addConnection(node1Id, node2Id);
+}
+
 int main(int argc, char** argv)
 {
     Q_INIT_RESOURCE(qnodeeditor_resources);
@@ -55,6 +64,15 @@ int main(int argc, char** argv)
     QApplication app(argc, argv);
 
     configureColorScheme();
+
+    QListView view;
+
+    std::shared_ptr<QNodeEditorTree> tree = std::make_unique<QNodeEditorTree>();
+    view.setModel(tree->model());
+
+    populateModel(tree);
+
+    view.show();
 
     QNodeEditor editor;
     editor.show();
