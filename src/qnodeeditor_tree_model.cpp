@@ -1,3 +1,5 @@
+#include <QRectF>
+
 #include "qnodeeditor_tree_model.hpp"
 
 Q_DECLARE_METATYPE(QNodeEditorNode*)
@@ -69,6 +71,9 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
             for (auto& connection : node->connections)
                 connections.append(connection);
             return QVariant::fromValue<QList<QNodeEditorNode*>>(connections);
+        }
+        case Rect: {
+            return QRectF { 0, 0, 100, 40 };
         }
     }
     return {};

@@ -50,7 +50,7 @@ void configureColorScheme()
 #endif
 }
 
-void populateModel(std::shared_ptr<QNodeEditorTree> tree)
+void populateModel(QNodeEditorTree* tree)
 {
     uint64_t node1Id = tree->addNode();
     uint64_t node2Id = tree->addNode();
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
     QListView view;
 
-    std::shared_ptr<QNodeEditorTree> tree = std::make_unique<QNodeEditorTree>();
+    QNodeEditorTree* tree = new QNodeEditorTree();
     view.setModel(tree->model());
 
     populateModel(tree);
@@ -75,6 +75,7 @@ int main(int argc, char** argv)
     view.show();
 
     QNodeEditor editor;
+    editor.setTree(tree);
     editor.show();
 
     return app.exec();

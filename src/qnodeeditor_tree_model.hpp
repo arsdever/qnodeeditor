@@ -15,7 +15,8 @@ class QNodeEditorTreeModel : public QAbstractListModel
 public:
     enum NodeDataRole {
         NodeId = Qt::UserRole,
-        Connections = Qt::UserRole + 1,
+        Connections,
+        Rect,
     };
 
 public:
