@@ -51,7 +51,7 @@ void QNodeEditor::addGrid()
         if (i % 10 == 0)
             continue;
 
-        QPen pen = QPen(palette().color(QPalette::Background).lighter(110));
+        QPen pen = QPen(palette().color(QPalette::Window).lighter(110));
         _scene->addLine(
             (i - GRID_COUNT / 2) * 10,
             -100000,
@@ -72,7 +72,7 @@ void QNodeEditor::addGrid()
         if (i == GRID_COUNT / 2)
             continue;
 
-        QPen pen = QPen(palette().color(QPalette::Background).lighter(200));
+        QPen pen = QPen(palette().color(QPalette::Window).lighter(200));
         _scene->addLine(
             (i - GRID_COUNT / 2) * 10,
             -100000,
@@ -89,7 +89,7 @@ void QNodeEditor::addGrid()
         );
     }
 
-    QPen pen = QPen(palette().color(QPalette::Background).lighter(200), 5);
+    QPen pen = QPen(palette().color(QPalette::Window).lighter(200), 5);
     _scene->addLine(0, -100000, 0, 100000, pen);
     _scene->addLine(-100000, 0, 100000, 0, pen);
 }
