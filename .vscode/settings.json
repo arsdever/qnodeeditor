@@ -55,7 +55,11 @@
 		"iterator": "cpp",
 		"memory_resource": "cpp",
 		"utility": "cpp",
-		"__verbose_abort": "cpp"
+		"__verbose_abort": "cpp",
+		"string_view": "cpp",
+		"__locale": "cpp",
+		"locale": "cpp",
+		"thread": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }

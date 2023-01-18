@@ -1,11 +1,13 @@
 #pragma once
 
+#include <QObject>
+
 class QAbstractItemModel;
 
-class QNodeEditorTree
+class QNodeEditorTree : public QObject
 {
 public:
-    explicit QNodeEditorTree();
+    explicit QNodeEditorTree(QObject* parent = nullptr);
     ~QNodeEditorTree();
 
     uint64_t addNode();

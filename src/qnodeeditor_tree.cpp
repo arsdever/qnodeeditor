@@ -4,8 +4,9 @@
 
 #include "qnodeeditor_tree_model.hpp"
 
-QNodeEditorTree::QNodeEditorTree()
-    : _model(new QNodeEditorTreeModel())
+QNodeEditorTree::QNodeEditorTree(QObject* parent)
+    : QObject(parent)
+    , _model(new QNodeEditorTreeModel())
 {
 }
 
