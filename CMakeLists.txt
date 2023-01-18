@@ -5,6 +5,7 @@ project(qnodeeditor)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_CXX_STANDARD 20)
 
 option(QNODEEDITOR_BUILD_TESTING "Option to enable/disable building the tests"
        ${BUILD_TESTING})
