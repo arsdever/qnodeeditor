@@ -1,8 +1,8 @@
 {
 	"cmake.configureArgs": [
 		// "-DCMAKE_TOOLCHAIN_FILE=${env:VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake",
-		"-DBUILD_TESTING=TRUE",
-		"-DBUILD_COVERAGE=TRUE",
+		"-DBUILD_TESTING=FALSE",
+		"-DBUILD_COVERAGE=FALSE",
 		"-DQT_VERSION=5"
 	],
 	"files.associations": {
