@@ -105,18 +105,7 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
             const QModelIndex& bottomRight,
             const QVector<int>& roles
         ) {
-        if (roles.contains(QNodeEditorTreeModel::NodeDataRole::Rect)) {
-            auto it = _model_index_graphics_item_mapping.find(
-                reinterpret_cast<uint64_t>(topLeft.internalId())
-            );
-            if (it != _model_index_graphics_item_mapping.end()) {
-                static_cast<QGraphicsRectItem*>(it->second)
-                    ->setRect(
-                        topLeft.data(QNodeEditorTreeModel::NodeDataRole::Rect)
-                            .toRectF()
-                    );
-            }
-        }
+        // TBD
         });
 
     connect(
@@ -125,12 +114,10 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
         this,
         [ model, this ](const QModelIndex& parent, int first, int last) {
         auto index = model->index(first, 0);
+        QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+        _scene->addItem(item);
         _model_index_graphics_item_mapping.emplace(
-            reinterpret_cast<uint64_t>(index.internalId()),
-            new QGraphicsRectItem(
-                index.data(QNodeEditorTreeModel::NodeDataRole::Rect)
-                    .value<QRectF>()
-            )
+            reinterpret_cast<uint64_t>(index.internalId()), item
         );
         });
 

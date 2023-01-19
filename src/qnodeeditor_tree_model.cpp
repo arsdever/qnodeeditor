@@ -3,8 +3,6 @@
 
 #include "qnodeeditor_tree_model.hpp"
 
-Q_DECLARE_METATYPE(QNodeEditorNode*)
-
 QNodeEditorTreeModel::QNodeEditorTreeModel(QObject* parent)
     : QAbstractListModel(parent)
 {
@@ -32,6 +30,11 @@ void QNodeEditorTreeModel::addConnection(uint64_t from, uint64_t to)
         return;
 
     fromNode->second->connections.push_back(toNode->second);
+    fromNode->second->outputPorts.push_back(QNodeEditorNode::Port {
+        "connection", false });
+
+    toNode->second->inputPorts.push_back(QNodeEditorNode::Port { "connection",
+                                                                 false });
 
     QModelIndex fromIndex = index(from);
 
@@ -73,11 +76,18 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
                 connections.append(connection);
             return QVariant::fromValue<QList<QNodeEditorNode*>>(connections);
         }
-        case Rect: {
-            return QRectF { 0, 0, 100, 40 };
-        }
         case Color: {
             return QColor { 164, 45, 63, 255 };
+        }
+        case Inputs: {
+            return QVariant::fromValue<QList<QNodeEditorNode::Port>>(
+                _nodes.at(index.row())->inputPorts
+            );
+        }
+        case Outputs: {
+            return QVariant::fromValue<QList<QNodeEditorNode::Port>>(
+                _nodes.at(index.row())->outputPorts
+            );
         }
     }
     return {};

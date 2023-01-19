@@ -4,9 +4,19 @@
 #include <unordered_map>
 
 struct QNodeEditorNode {
+    struct Port {
+        std::string name;
+        bool supportsMultipleConnections;
+    };
+
     uint64_t id;
     std::vector<QNodeEditorNode*> connections;
+    QList<Port> inputPorts;
+    QList<Port> outputPorts;
 };
+
+Q_DECLARE_METATYPE(QNodeEditorNode*)
+Q_DECLARE_METATYPE(QNodeEditorNode::Port)
 
 class QNodeEditorTreeModel : public QAbstractListModel
 {
@@ -16,8 +26,9 @@ public:
     enum NodeDataRole {
         NodeId = Qt::UserRole,
         Connections,
-        Rect,
         Color,
+        Inputs,
+        Outputs,
     };
 
 public:

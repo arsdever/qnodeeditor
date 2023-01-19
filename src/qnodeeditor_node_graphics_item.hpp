@@ -20,5 +20,5 @@ public:
 #pragma endregion
 
 private:
-	QModelIndex _index;
+    QModelIndex _index;
 };
