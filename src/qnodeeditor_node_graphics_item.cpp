@@ -37,7 +37,8 @@ QRectF QNodeEditorNodeGraphicsItem::boundingRect() const
         std::max(std::size_t(0), (maxPortCount - 1)) * PORT_SPACING;
 
     return QRectF(
-        0,
+        // TODO fix me
+        _index.row() * 150,
         0,
         // TODO fetch from name
         100,
