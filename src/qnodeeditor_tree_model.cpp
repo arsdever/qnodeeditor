@@ -1,3 +1,4 @@
+#include <QColor>
 #include <QRectF>
 
 #include "qnodeeditor_tree_model.hpp"
@@ -74,6 +75,9 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
         }
         case Rect: {
             return QRectF { 0, 0, 100, 40 };
+        }
+        case Color: {
+            return QColor { 164, 45, 63, 255 };
         }
     }
     return {};

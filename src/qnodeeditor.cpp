@@ -6,6 +6,7 @@
 #include "qnodeeditor/qnodeeditor.hpp"
 
 #include "qnodeeditor/qnodeeditor_tree.hpp"
+#include "qnodeeditor_node_graphics_item.hpp"
 #include "qnodeeditor_tree_model.hpp"
 
 namespace
@@ -32,9 +33,7 @@ void QNodeEditor::setTree(QNodeEditorTree* tree)
     setupModelConnections(tree->model());
     for (int i = 0; i < tree->model()->rowCount(); ++i) {
         auto index = tree->model()->index(i, 0);
-        QGraphicsItem* item = new QGraphicsRectItem(
-            index.data(QNodeEditorTreeModel::NodeDataRole::Rect).value<QRectF>()
-        );
+        QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
         _scene->addItem(item);
         _model_index_graphics_item_mapping.emplace(
             reinterpret_cast<uint64_t>(index.internalId()), item
@@ -159,12 +158,10 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
 
         for (int i = 0; i < _tree->model()->rowCount(); ++i) {
             auto index = _tree->model()->index(i, 0);
+            QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+            _scene->addItem(item);
             _model_index_graphics_item_mapping.emplace(
-                reinterpret_cast<uint64_t>(index.internalId()),
-                new QGraphicsRectItem(
-                    index.data(QNodeEditorTreeModel::NodeDataRole::Rect)
-                        .value<QRectF>()
-                )
+                reinterpret_cast<uint64_t>(index.internalId()), item
             );
         }
     });

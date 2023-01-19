@@ -17,6 +17,7 @@ public:
         NodeId = Qt::UserRole,
         Connections,
         Rect,
+        Color,
     };
 
 public:
