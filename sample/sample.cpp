@@ -1,5 +1,5 @@
 #include <QApplication>
-#include <QListView>
+#include <QTreeView>
 
 #include "qnodeeditor/qnodeeditor.hpp"
 #include "qnodeeditor/qnodeeditor_tree.hpp"
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
     configureColorScheme();
 
-    QListView view;
+    QTreeView view;
 
     QNodeEditorTree* tree = new QNodeEditorTree();
     view.setModel(tree->model());
@@ -75,6 +75,9 @@ int main(int argc, char** argv)
     populateModel(tree);
 
     view.show();
+
+    for (int i = 0; i < tree->model()->columnCount(); ++i)
+        view.resizeColumnToContents(i);
 
     QNodeEditor editor;
     editor.setTree(tree);

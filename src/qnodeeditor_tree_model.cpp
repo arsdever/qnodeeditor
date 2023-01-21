@@ -48,7 +48,7 @@ int QNodeEditorTreeModel::rowCount(const QModelIndex& parent) const
 
 int QNodeEditorTreeModel::columnCount(const QModelIndex& parent) const
 {
-    return 1;
+    return 3;
 }
 
 QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
@@ -58,15 +58,17 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
 
     switch (role) {
         case Qt::DisplayRole: {
-            QString connectionsString;
-            for (auto& connection :
-                 data(index, Connections).value<QList<QNodeEditorNode*>>()) {
-                connectionsString.append(QString::number(connection->id));
-                connectionsString.append(", ");
+            switch (index.column()) {
+                case 0: return tr("Node %0").arg(_nodes.at(index.row())->id);
+                case 1:
+                    return index.data(Inputs)
+                        .value<QList<QNodeEditorNode::Port>>()
+                        .size();
+                case 2:
+                    return index.data(Outputs)
+                        .value<QList<QNodeEditorNode::Port>>()
+                        .size();
             }
-            return tr("Node: %1, Connections: %2")
-                .arg(data(index, NodeId).toInt())
-                .arg(connectionsString);
         }
         case NodeId: return index.row();
         case Connections: {
@@ -97,7 +99,17 @@ QVariant QNodeEditorTreeModel::headerData(
     int section, Qt::Orientation orientation, int role
 ) const
 {
-    return {};
+    switch (role) {
+        case Qt::DisplayRole: {
+            switch (section) {
+                case 0: return "Name";
+                case 1: return "Inputs";
+                case 2: return "Outputs";
+                default: return {};
+            }
+        }
+        default: return {};
+    }
 }
 
 uint64_t QNodeEditorTreeModel::idCounter = 0;
