@@ -30,7 +30,7 @@ QNodeEditor::QNodeEditor(QWidget* parent)
 void QNodeEditor::setTree(QNodeEditorTree* tree)
 {
     _tree = tree;
-    setupModelConnections(tree->model());
+    setupModelConnections(qobject_cast<QNodeEditorTreeModel*>(tree->model()));
     for (int i = 0; i < tree->model()->rowCount(); ++i) {
         auto index = tree->model()->index(i, 0);
         QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
@@ -97,7 +97,7 @@ void QNodeEditor::addGrid()
     _scene->addLine(-100000, 0, 100000, 0, pen);
 }
 
-void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
+void QNodeEditor::setupModelConnections(QNodeEditorTreeModel* model)
 {
     connect(
         model,
@@ -117,51 +117,68 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
         &QAbstractItemModel::rowsInserted,
         this,
         [ model, this ](const QModelIndex& parent, int first, int last) {
-        auto index = model->index(first, 0);
-        QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
-        item->setPos( // TODO fix me
-            index.row() * 150,
-            0
-        );
-        _scene->addItem(item);
-        _model_index_graphics_item_mapping.emplace(
-            reinterpret_cast<uint64_t>(index.internalId()), item
-        );
+        for (int i = first; i <= last; ++i)
+            addNodeGraphics(model->index(i, 0, parent));
         });
 
     connect(
         model,
-        &QAbstractItemModel::rowsRemoved,
+        &QAbstractItemModel::rowsAboutToBeRemoved,
         this,
-        [ this ](const QModelIndex& parent, int first, int last) {
-        auto it = _model_index_graphics_item_mapping.find(
-            reinterpret_cast<uint64_t>(parent.internalId())
-        );
-        if (it != _model_index_graphics_item_mapping.end()) {
-            _scene->removeItem(it->second);
-            delete it->second;
-            _model_index_graphics_item_mapping.erase(it);
-        }
+        [ model, this ](const QModelIndex& parent, int first, int last) {
+        for (int i = first; i <= last; ++i)
+            removeNodeGraphics(model->index(i, 0, parent));
         });
 
-    connect(model, &QAbstractItemModel::modelReset, this, [ this ]() {
-        for (auto& [ key, value ] : _model_index_graphics_item_mapping) {
-            _scene->removeItem(value);
-            delete value;
-        }
-        _model_index_graphics_item_mapping.clear();
+    connect(model, &QAbstractItemModel::modelAboutToBeReset, this, [ this ] {
+        removeAllNodeGraphics();
+    });
 
+    connect(model, &QAbstractItemModel::modelReset, this, [ this ]() {
         for (int i = 0; i < _tree->model()->rowCount(); ++i) {
             auto index = _tree->model()->index(i, 0);
-            QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
-            item->setPos( // TODO fix me
-                index.row() * 150,
-                0
-            );
-            _scene->addItem(item);
-            _model_index_graphics_item_mapping.emplace(
-                reinterpret_cast<uint64_t>(index.internalId()), item
-            );
+            addNodeGraphics(index);
         }
     });
+
+    connect(
+        model,
+        &QNodeEditorTreeModel::connectionAdded,
+        this,
+        [ this ](QModelIndex from, QModelIndex to) {}
+    );
+}
+
+void QNodeEditor::addNodeGraphics(QModelIndex index)
+{
+    QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
+    item->setPos( // TODO fix me
+        index.row() * 150,
+        0
+    );
+    _scene->addItem(item);
+    _model_index_graphics_item_mapping.emplace(
+        reinterpret_cast<uint64_t>(index.internalId()), item
+    );
+}
+
+void QNodeEditor::removeNodeGraphics(QModelIndex index)
+{
+    auto it = _model_index_graphics_item_mapping.find(
+        reinterpret_cast<uint64_t>(index.internalId())
+    );
+    if (it != _model_index_graphics_item_mapping.end()) {
+        _scene->removeItem(it->second);
+        delete it->second;
+        _model_index_graphics_item_mapping.erase(it);
+    }
+}
+
+void QNodeEditor::removeAllNodeGraphics()
+{
+    for (auto& [ key, value ] : _model_index_graphics_item_mapping) {
+        _scene->removeItem(value);
+        delete value;
+    }
+    _model_index_graphics_item_mapping.clear();
 }

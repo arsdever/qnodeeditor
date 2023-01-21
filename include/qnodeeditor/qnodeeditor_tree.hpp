@@ -3,6 +3,7 @@
 #include <QObject>
 
 class QAbstractItemModel;
+class QNodeEditorTreeModel;
 
 class QNodeEditorTree : public QObject
 {
@@ -16,5 +17,5 @@ public:
     QAbstractItemModel* model() const;
 
 private:
-    QAbstractItemModel* _model;
+    QNodeEditorTreeModel* _model;
 };

@@ -17,6 +17,8 @@ uint64_t QNodeEditorTreeModel::addNode()
     uint64_t id = idCounter++;
     _nodes.emplace(id, new QNodeEditorNode { id });
 
+    emit nodeAdded(index(id, 0));
+
     endInsertRows();
     return id;
 }
@@ -39,7 +41,10 @@ void QNodeEditorTreeModel::addConnection(uint64_t from, uint64_t to)
     );
 
     QModelIndex fromIndex = index(from);
+    QModelIndex toIndex = index(to);
 
+    emit connectionAdded(fromIndex, toIndex);
+    emit dataChanged(toIndex, toIndex, { Connections });
     emit dataChanged(fromIndex, fromIndex, { Connections });
 }
 

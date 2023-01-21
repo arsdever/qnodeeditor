@@ -43,6 +43,10 @@ public:
         const override;
 #pragma endregion
 
+signals:
+    void nodeAdded(QModelIndex index);
+    void connectionAdded(QModelIndex from, QModelIndex to);
+
 private:
     QNodeEditorNode* _root;
     std::unordered_map<uint64_t, QNodeEditorNode*> _nodes;

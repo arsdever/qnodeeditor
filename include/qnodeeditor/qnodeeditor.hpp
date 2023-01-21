@@ -8,6 +8,7 @@ class QGraphicsItem;
 class QGraphicsScene;
 class QGraphicsView;
 class QNodeEditorTree;
+class QNodeEditorTreeModel;
 
 class QNodeEditor : public QWidget
 {
@@ -18,7 +19,14 @@ public:
 
 private:
     void addGrid();
-    void setupModelConnections(QAbstractItemModel* model);
+    void setupModelConnections(QNodeEditorTreeModel* model);
+
+    void addNodeGraphics(QModelIndex index);
+    void removeNodeGraphics(QModelIndex index);
+    void removeAllNodeGraphics();
+
+    void addConnection(uint64_t from, uint64_t to);
+    void removeConnection(uint64_t from, uint64_t to);
 
 private:
     QGraphicsView* _view;
