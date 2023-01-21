@@ -1,6 +1,6 @@
 #pragma once
 
-#include <QAbstractGraphicsShapeItem>
+#include <QGraphicsObject>
 #include <QModelIndex>
 
 class QNodeEditorNodeGraphicsItem : public QGraphicsObject
@@ -10,7 +10,7 @@ public:
         QModelIndex index, QGraphicsItem* parent = nullptr
     );
 
-#pragma region QAbstractGraphicsShapeItem
+#pragma region QGraphicsObject
     QRectF boundingRect() const override;
     void paint(
         QPainter* painter,

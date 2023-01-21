@@ -34,6 +34,10 @@ void QNodeEditor::setTree(QNodeEditorTree* tree)
     for (int i = 0; i < tree->model()->rowCount(); ++i) {
         auto index = tree->model()->index(i, 0);
         QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+        item->setPos( // TODO fix me
+            index.row() * 150,
+            0
+        );
         _scene->addItem(item);
         _model_index_graphics_item_mapping.emplace(
             reinterpret_cast<uint64_t>(index.internalId()), item
@@ -115,6 +119,10 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
         [ model, this ](const QModelIndex& parent, int first, int last) {
         auto index = model->index(first, 0);
         QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+        item->setPos( // TODO fix me
+            index.row() * 150,
+            0
+        );
         _scene->addItem(item);
         _model_index_graphics_item_mapping.emplace(
             reinterpret_cast<uint64_t>(index.internalId()), item
@@ -146,6 +154,10 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
         for (int i = 0; i < _tree->model()->rowCount(); ++i) {
             auto index = _tree->model()->index(i, 0);
             QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+            item->setPos( // TODO fix me
+                index.row() * 150,
+                0
+            );
             _scene->addItem(item);
             _model_index_graphics_item_mapping.emplace(
                 reinterpret_cast<uint64_t>(index.internalId()), item

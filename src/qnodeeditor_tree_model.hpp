@@ -3,20 +3,17 @@
 #include <QAbstractListModel>
 #include <unordered_map>
 
-struct QNodeEditorNode {
-    struct Port {
-        std::string name;
-        bool supportsMultipleConnections;
-    };
+#include "qnodeeditor/qnodeeditor_port.hpp"
 
+struct QNodeEditorNode {
     uint64_t id;
     std::vector<QNodeEditorNode*> connections;
-    QList<Port> inputPorts;
-    QList<Port> outputPorts;
+    QList<std::shared_ptr<QNodeEditorPort>> inputPorts;
+    QList<std::shared_ptr<QNodeEditorPort>> outputPorts;
 };
 
 Q_DECLARE_METATYPE(QNodeEditorNode*)
-Q_DECLARE_METATYPE(QNodeEditorNode::Port)
+Q_DECLARE_METATYPE(std::shared_ptr<QNodeEditorPort>)
 
 class QNodeEditorTreeModel : public QAbstractListModel
 {

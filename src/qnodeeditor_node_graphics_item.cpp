@@ -1,3 +1,4 @@
+#include <QDebug>
 #include <QFontMetrics>
 #include <QLinearGradient>
 #include <QPainter>
@@ -26,20 +27,19 @@ QRectF QNodeEditorNodeGraphicsItem::boundingRect() const
 {
     std::size_t maxPortCount = std::max(
         _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
-            .value<QList<QNodeEditorNode::Port>>()
+            .value<QList<std::shared_ptr<QNodeEditorPort>>>()
             .size(),
         _index.data(QNodeEditorTreeModel::NodeDataRole::Outputs)
-            .value<QList<QNodeEditorNode::Port>>()
+            .value<QList<std::shared_ptr<QNodeEditorPort>>>()
             .size()
     );
 
     std::size_t height =
         3 * NODE_PADDING + QPainter().fontMetrics().height() +
-        std::max(std::size_t(0), (maxPortCount - 1)) * PORT_SPACING;
+        std::max(0, static_cast<int>(maxPortCount) - 1) * PORT_SPACING;
 
     return QRectF(
-        // TODO fix me
-        _index.row() * 150,
+        0,
         0,
         // TODO fetch from name
         100,
@@ -83,9 +83,9 @@ void QNodeEditorNodeGraphicsItem::paint(
     );
     painter->fillRect(titleRect, QColor(0, 0, 0, 64));
     auto inputPorts = _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
-                          .value<QList<QNodeEditorNode::Port>>();
+                          .value<QList<std::shared_ptr<QNodeEditorPort>>>();
     auto outputPorts = _index.data(QNodeEditorTreeModel::NodeDataRole::Outputs)
-                           .value<QList<QNodeEditorNode::Port>>();
+                           .value<QList<std::shared_ptr<QNodeEditorPort>>>();
     painter->save();
     painter->translate(boundingRect().topLeft());
     painter->translate(

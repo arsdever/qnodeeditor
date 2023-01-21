@@ -30,11 +30,13 @@ void QNodeEditorTreeModel::addConnection(uint64_t from, uint64_t to)
         return;
 
     fromNode->second->connections.push_back(toNode->second);
-    fromNode->second->outputPorts.push_back(QNodeEditorNode::Port {
-        "connection", false });
+    fromNode->second->outputPorts.push_back(
+        std::make_shared<QNodeEditorPort>("connection", false)
+    );
 
-    toNode->second->inputPorts.push_back(QNodeEditorNode::Port { "connection",
-                                                                 false });
+    toNode->second->inputPorts.push_back(
+        std::make_shared<QNodeEditorPort>("connection", false)
+    );
 
     QModelIndex fromIndex = index(from);
 
@@ -62,11 +64,11 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
                 case 0: return tr("Node %0").arg(_nodes.at(index.row())->id);
                 case 1:
                     return index.data(Inputs)
-                        .value<QList<QNodeEditorNode::Port>>()
+                        .value<QList<std::shared_ptr<QNodeEditorPort>>>()
                         .size();
                 case 2:
                     return index.data(Outputs)
-                        .value<QList<QNodeEditorNode::Port>>()
+                        .value<QList<std::shared_ptr<QNodeEditorPort>>>()
                         .size();
             }
         }
@@ -82,12 +84,12 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
             return QColor { 164, 45, 63, 255 };
         }
         case Inputs: {
-            return QVariant::fromValue<QList<QNodeEditorNode::Port>>(
+            return QVariant::fromValue<QList<std::shared_ptr<QNodeEditorPort>>>(
                 _nodes.at(index.row())->inputPorts
             );
         }
         case Outputs: {
-            return QVariant::fromValue<QList<QNodeEditorNode::Port>>(
+            return QVariant::fromValue<QList<std::shared_ptr<QNodeEditorPort>>>(
                 _nodes.at(index.row())->outputPorts
             );
         }
