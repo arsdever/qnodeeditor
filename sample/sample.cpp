@@ -55,8 +55,8 @@ void populateModel(QNodeEditorTree* tree)
     uint64_t node1Id = tree->addNode();
     uint64_t node2Id = tree->addNode();
     uint64_t node3Id = tree->addNode();
-    tree->addConnection(node1Id, node2Id);
-    tree->addConnection(node1Id, node3Id);
+    tree->addConnection(node1Id, 0, node2Id, 0);
+    tree->addConnection(node1Id, 1, node3Id, 0);
 }
 
 int main(int argc, char** argv)

@@ -5,15 +5,8 @@
 
 #include "qnodeeditor/qnodeeditor_port.hpp"
 
-struct QNodeEditorNode {
-    uint64_t id;
-    std::vector<QNodeEditorNode*> connections;
-    QList<std::shared_ptr<QNodeEditorPort>> inputPorts;
-    QList<std::shared_ptr<QNodeEditorPort>> outputPorts;
-};
-
-Q_DECLARE_METATYPE(QNodeEditorNode*)
 Q_DECLARE_METATYPE(std::shared_ptr<QNodeEditorPort>)
+class QNodeEditorConnection;
 
 class QNodeEditorTreeModel : public QAbstractListModel
 {
@@ -33,9 +26,17 @@ public:
     ~QNodeEditorTreeModel() override;
 
     uint64_t addNode();
-    void addConnection(uint64_t from, uint64_t to);
+    void addConnection(
+        uint64_t fromNodeId,
+        uint64_t fromPort,
+        uint64_t toNodeId,
+        uint64_t toPort
+    );
 
 #pragma region QAbstractItemModel
+    QModelIndex index(
+        int row, int column = 0, const QModelIndex& parent = QModelIndex {}
+    ) const override;
     int rowCount(const QModelIndex& parent = QModelIndex {}) const override;
     int columnCount(const QModelIndex& parent = QModelIndex {}) const override;
     QVariant data(const QModelIndex& index, int role) const override;
@@ -45,7 +46,7 @@ public:
 
 signals:
     void nodeAdded(QModelIndex index);
-    void connectionAdded(QModelIndex from, QModelIndex to);
+    void connectionAdded(QNodeEditorConnection* connection);
 
 private:
     QNodeEditorNode* _root;

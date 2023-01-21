@@ -9,7 +9,7 @@ class QNodeEditorPortGraphicsObject : public QGraphicsObject
 {
 public:
     explicit QNodeEditorPortGraphicsObject(
-        std::shared_ptr<QNodeEditorPort> port, QGraphicsItem* parent = nullptr
+        QNodeEditorPort* port, QGraphicsItem* parent = nullptr
     );
 
 #pragma region QGraphicsObject

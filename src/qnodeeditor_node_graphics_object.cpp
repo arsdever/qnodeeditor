@@ -5,6 +5,7 @@
 
 #include "qnodeeditor_node_graphics_object.hpp"
 
+#include "qnodeeditor/qnodeeditor.hpp"
 #include "qnodeeditor_port_graphics_object.hpp"
 #include "qnodeeditor_tree_model.hpp"
 
@@ -28,23 +29,35 @@ QNodeEditorNodeGraphicsObject::QNodeEditorNodeGraphicsObject(
 
     std::size_t portIndex = 0;
     for (auto& port : _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
-                          .value<QList<std::shared_ptr<QNodeEditorPort>>>()) {
+                          .value<QList<QNodeEditorPort*>>()) {
         QGraphicsItem* item = new QNodeEditorPortGraphicsObject(port, this);
-        item->setPos(
-            0, (portIndex + .5) * PORT_SPACING + NODE_PADDING + TITLE_HEIGHT
-        );
+        item->setPos(getPortPosition(portIndex, PortType::In));
         ++portIndex;
     }
 
     portIndex = 0;
     for (auto& port : _index.data(QNodeEditorTreeModel::NodeDataRole::Outputs)
-                          .value<QList<std::shared_ptr<QNodeEditorPort>>>()) {
+                          .value<QList<QNodeEditorPort*>>()) {
         QGraphicsItem* item = new QNodeEditorPortGraphicsObject(port, this);
-        item->setPos(
-            boundingRect().width(),
-            (portIndex + .5) * PORT_SPACING + NODE_PADDING + TITLE_HEIGHT
-        );
+        item->setPos(getPortPosition(portIndex, PortType::Out));
         ++portIndex;
+    }
+}
+
+QPointF QNodeEditorNodeGraphicsObject::getPortPosition(
+    uint64_t portIndex, PortType portType
+) const
+{
+    switch (portType) {
+        case PortType::In:
+            return QPointF(
+                0, (portIndex + .5) * PORT_SPACING + NODE_PADDING + TITLE_HEIGHT
+            );
+        case PortType::Out:
+            return QPointF(
+                boundingRect().width(),
+                (portIndex + .5) * PORT_SPACING + NODE_PADDING + TITLE_HEIGHT
+            );
     }
 }
 
@@ -52,10 +65,10 @@ QRectF QNodeEditorNodeGraphicsObject::boundingRect() const
 {
     std::size_t maxPortCount = std::max(
         _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
-            .value<QList<std::shared_ptr<QNodeEditorPort>>>()
+            .value<QList<QNodeEditorPort*>>()
             .size(),
         _index.data(QNodeEditorTreeModel::NodeDataRole::Outputs)
-            .value<QList<std::shared_ptr<QNodeEditorPort>>>()
+            .value<QList<QNodeEditorPort*>>()
             .size()
     );
 

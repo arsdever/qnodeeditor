@@ -3,20 +3,22 @@
 #include <string>
 #include <string_view>
 
+class QNodeEditorNode;
+enum class PortType;
+
 class QNodeEditorPort
 {
 public:
-    QNodeEditorPort() { }
-    QNodeEditorPort(std::string_view name, bool supportsMultipleConnections)
-        : name(name)
-        , supportsMultipleConnections(supportsMultipleConnections)
-    {
-    }
+    QNodeEditorPort();
+    QNodeEditorPort(
+        QNodeEditorNode* node, uint64_t index, PortType type, std::string_view name
+    );
 
-    // TODO make private
 public:
-    std::string name;
-    bool supportsMultipleConnections;
+    QNodeEditorNode* _node;
+    uint64_t _index;
+    PortType _type;
+    std::string _name;
 };
 
-Q_DECLARE_METATYPE(QNodeEditorPort)
+Q_DECLARE_METATYPE(QNodeEditorPort*)

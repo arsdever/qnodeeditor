@@ -9,6 +9,10 @@ class QGraphicsScene;
 class QGraphicsView;
 class QNodeEditorTree;
 class QNodeEditorTreeModel;
+class QNodeEditorConnection;
+class QNodeEditorPort;
+
+enum class PortType { In, Out };
 
 class QNodeEditor : public QWidget
 {
@@ -25,8 +29,13 @@ private:
     void removeNodeGraphics(QModelIndex index);
     void removeAllNodeGraphics();
 
-    void addConnection(uint64_t from, uint64_t to);
-    void removeConnection(uint64_t from, uint64_t to);
+    void addConnectionGraphics(QNodeEditorConnection* connection);
+    void removeConnection(QNodeEditorConnection* connection);
+
+    QPointF getPortPosition(QNodeEditorPort* port) const;
+
+private:
+    friend class QNodeEditorConnectionGraphicsObject;
 
 private:
     QGraphicsView* _view;

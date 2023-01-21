@@ -5,7 +5,11 @@
 
 #include "qnodeeditor/qnodeeditor.hpp"
 
+#include "qnodeeditor/qnodeeditor_connection.hpp"
+#include "qnodeeditor/qnodeeditor_node.hpp"
+#include "qnodeeditor/qnodeeditor_port.hpp"
 #include "qnodeeditor/qnodeeditor_tree.hpp"
+#include "qnodeeditor_connection_graphics_object.hpp"
 #include "qnodeeditor_node_graphics_object.hpp"
 #include "qnodeeditor_tree_model.hpp"
 
@@ -31,17 +35,9 @@ void QNodeEditor::setTree(QNodeEditorTree* tree)
 {
     _tree = tree;
     setupModelConnections(qobject_cast<QNodeEditorTreeModel*>(tree->model()));
-    for (int i = 0; i < tree->model()->rowCount(); ++i) {
-        auto index = tree->model()->index(i, 0);
-        QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
-        item->setPos( // TODO fix me
-            index.row() * 150,
-            0
-        );
-        _scene->addItem(item);
-        _model_index_graphics_item_mapping.emplace(
-            reinterpret_cast<uint64_t>(index.internalId()), item
-        );
+    for (int i = 0; i < _tree->model()->rowCount(); ++i) {
+        auto index = _tree->model()->index(i, 0);
+        addNodeGraphics(index);
     }
 }
 
@@ -145,8 +141,9 @@ void QNodeEditor::setupModelConnections(QNodeEditorTreeModel* model)
         model,
         &QNodeEditorTreeModel::connectionAdded,
         this,
-        [ this ](QModelIndex from, QModelIndex to) {}
-    );
+        [ this ](QNodeEditorConnection* connection) {
+        addConnectionGraphics(connection);
+        });
 }
 
 void QNodeEditor::addNodeGraphics(QModelIndex index)
@@ -160,6 +157,13 @@ void QNodeEditor::addNodeGraphics(QModelIndex index)
     _model_index_graphics_item_mapping.emplace(
         reinterpret_cast<uint64_t>(index.internalId()), item
     );
+
+    QList<QNodeEditorConnection*> connections =
+        index.data(QNodeEditorTreeModel::Connections)
+            .value<QList<QNodeEditorConnection*>>();
+
+    for (auto& connection : connections)
+        addConnectionGraphics(connection);
 }
 
 void QNodeEditor::removeNodeGraphics(QModelIndex index)
@@ -181,4 +185,24 @@ void QNodeEditor::removeAllNodeGraphics()
         delete value;
     }
     _model_index_graphics_item_mapping.clear();
+}
+
+void QNodeEditor::addConnectionGraphics(QNodeEditorConnection* connection)
+{
+    auto connectionGraphics =
+        new QNodeEditorConnectionGraphicsObject(*this, connection);
+    _scene->addItem(connectionGraphics);
+}
+
+QPointF QNodeEditor::getPortPosition(QNodeEditorPort* port) const
+{
+    auto it = _model_index_graphics_item_mapping.find(port->_node->_id);
+    if (it != _model_index_graphics_item_mapping.end()) {
+        auto node = dynamic_cast<QNodeEditorNodeGraphicsObject*>(it->second);
+        if (node)
+            return node->mapToScene(
+                node->getPortPosition(port->_index, port->_type)
+            );
+    }
+    return {};
 }

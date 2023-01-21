@@ -4,6 +4,8 @@
 #include <QModelIndex>
 #include <QStyle>
 
+enum class PortType;
+
 class QNodeEditorNodeGraphicsObject : public QGraphicsObject
 {
 public:
@@ -11,8 +13,10 @@ public:
         QModelIndex index, QGraphicsItem* parent = nullptr
     );
 
+    QPointF getPortPosition(uint64_t portIndex, PortType portType) const;
+
 #pragma region QGraphicsObject
-	public:
+public:
     QRectF boundingRect() const override;
     void paint(
         QPainter* painter,

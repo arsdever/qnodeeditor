@@ -16,9 +16,11 @@ uint64_t QNodeEditorTree::addNode()
     return id;
 }
 
-void QNodeEditorTree::addConnection(uint64_t from, uint64_t to)
+void QNodeEditorTree::addConnection(
+    uint64_t fromNodeId, uint64_t fromPort, uint64_t toNodeId, uint64_t toPort
+)
 {
-    _model->addConnection(from, to);
+    _model->addConnection(fromNodeId, fromPort, toNodeId, toPort);
 }
 
 QAbstractItemModel* QNodeEditorTree::model() const { return _model; }

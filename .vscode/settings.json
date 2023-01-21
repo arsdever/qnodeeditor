@@ -60,7 +60,14 @@
 		"__locale": "cpp",
 		"locale": "cpp",
 		"thread": "cpp",
-		"deque": "cpp"
+		"deque": "cpp",
+		"__tree": "cpp",
+		"charconv": "cpp",
+		"__string": "cpp",
+		"map": "cpp",
+		"list": "cpp",
+		"optional": "cpp",
+		"queue": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }

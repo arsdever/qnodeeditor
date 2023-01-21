@@ -12,7 +12,12 @@ public:
     ~QNodeEditorTree();
 
     uint64_t addNode();
-    void addConnection(uint64_t from, uint64_t to);
+    void addConnection(
+        uint64_t fromNodeId,
+        uint64_t fromPort,
+        uint64_t toNodeId,
+        uint64_t toPort
+    );
 
     QAbstractItemModel* model() const;
 

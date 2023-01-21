@@ -5,7 +5,7 @@
 #include "qnodeeditor/qnodeeditor_port.hpp"
 
 QNodeEditorPortGraphicsObject::QNodeEditorPortGraphicsObject(
-    std::shared_ptr<QNodeEditorPort> port, QGraphicsItem* parent
+    QNodeEditorPort* port, QGraphicsItem* parent
 )
     : QGraphicsObject(parent)
     , _port(port)

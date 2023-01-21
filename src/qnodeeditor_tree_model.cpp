@@ -3,6 +3,11 @@
 
 #include "qnodeeditor_tree_model.hpp"
 
+#include "qnodeeditor/qnodeeditor.hpp"
+#include "qnodeeditor/qnodeeditor_connection.hpp"
+#include "qnodeeditor/qnodeeditor_node.hpp"
+#include "qnodeeditor/qnodeeditor_port.hpp"
+
 QNodeEditorTreeModel::QNodeEditorTreeModel(QObject* parent)
     : QAbstractListModel(parent)
 {
@@ -23,29 +28,52 @@ uint64_t QNodeEditorTreeModel::addNode()
     return id;
 }
 
-void QNodeEditorTreeModel::addConnection(uint64_t from, uint64_t to)
+void QNodeEditorTreeModel::addConnection(
+    uint64_t fromNodeId, uint64_t fromPort, uint64_t toNodeId, uint64_t toPort
+)
 {
-    auto fromNode = _nodes.find(from);
-    auto toNode = _nodes.find(to);
+    auto fromNode = _nodes.find(fromNodeId);
+    auto toNode = _nodes.find(toNodeId);
 
     if (fromNode == _nodes.end() || toNode == _nodes.end())
         return;
 
-    fromNode->second->connections.push_back(toNode->second);
-    fromNode->second->outputPorts.push_back(
-        std::make_shared<QNodeEditorPort>("connection", false)
-    );
+    while (toNode->second->_inputPorts.size() <= toPort)
+        toNode->second->_inputPorts.push_back(new QNodeEditorPort {
+            toNode->second,
+            static_cast<uint64_t>(toNode->second->_inputPorts.size()),
+            PortType::In,
+            tr("input %0")
+                .arg(toNode->second->_inputPorts.size())
+                .toStdString() });
 
-    toNode->second->inputPorts.push_back(
-        std::make_shared<QNodeEditorPort>("connection", false)
-    );
+    while (fromNode->second->_outputPorts.size() <= fromPort)
+        fromNode->second->_outputPorts.push_back(new QNodeEditorPort {
+            fromNode->second,
+            static_cast<uint64_t>(fromNode->second->_outputPorts.size()),
+            PortType::Out,
+            tr("output %0")
+                .arg(fromNode->second->_outputPorts.size())
+                .toStdString() });
 
-    QModelIndex fromIndex = index(from);
-    QModelIndex toIndex = index(to);
+    QNodeEditorConnection* connection =
+        new QNodeEditorConnection { fromNode->second->_outputPorts.at(fromPort),
+                                    toNode->second->_inputPorts.at(toPort) };
+    fromNode->second->_connections.push_back(connection);
 
-    emit connectionAdded(fromIndex, toIndex);
+    QModelIndex fromIndex = index(fromNodeId);
+    QModelIndex toIndex = index(toNodeId);
+
+    emit connectionAdded(connection);
     emit dataChanged(toIndex, toIndex, { Connections });
     emit dataChanged(fromIndex, fromIndex, { Connections });
+}
+
+QModelIndex QNodeEditorTreeModel::index(
+    int row, int column, const QModelIndex& parent
+) const
+{
+    return createIndex(row, column, _nodes.at(row)->_id);
 }
 
 int QNodeEditorTreeModel::rowCount(const QModelIndex& parent) const
@@ -66,36 +94,35 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
     switch (role) {
         case Qt::DisplayRole: {
             switch (index.column()) {
-                case 0: return tr("Node %0").arg(_nodes.at(index.row())->id);
+                case 0: return tr("Node %0").arg(_nodes.at(index.row())->_id);
                 case 1:
                     return index.data(Inputs)
-                        .value<QList<std::shared_ptr<QNodeEditorPort>>>()
+                        .value<QList<QNodeEditorPort*>>()
                         .size();
                 case 2:
                     return index.data(Outputs)
-                        .value<QList<std::shared_ptr<QNodeEditorPort>>>()
+                        .value<QList<QNodeEditorPort*>>()
                         .size();
             }
         }
         case NodeId: return index.row();
         case Connections: {
-            QList<QNodeEditorNode*> connections;
             auto& node = _nodes.at(index.row());
-            for (auto& connection : node->connections)
-                connections.append(connection);
-            return QVariant::fromValue<QList<QNodeEditorNode*>>(connections);
+            return QVariant::fromValue<QList<QNodeEditorConnection*>>(
+                node->_connections
+            );
         }
         case Color: {
             return QColor { 164, 45, 63, 255 };
         }
         case Inputs: {
-            return QVariant::fromValue<QList<std::shared_ptr<QNodeEditorPort>>>(
-                _nodes.at(index.row())->inputPorts
+            return QVariant::fromValue<QList<QNodeEditorPort*>>(
+                _nodes.at(index.row())->_inputPorts
             );
         }
         case Outputs: {
-            return QVariant::fromValue<QList<std::shared_ptr<QNodeEditorPort>>>(
-                _nodes.at(index.row())->outputPorts
+            return QVariant::fromValue<QList<QNodeEditorPort*>>(
+                _nodes.at(index.row())->_outputPorts
             );
         }
     }
