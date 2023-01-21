@@ -1,10 +1,16 @@
 #include <QPainter>
+#include <QPainterPath>
 
 #include "qnodeeditor_connection_graphics_object.hpp"
 
 #include "qnodeeditor/qnodeeditor.hpp"
 #include "qnodeeditor/qnodeeditor_connection.hpp"
 #include "qnodeeditor/qnodeeditor_port.hpp"
+
+namespace
+{
+static constexpr double ARC_DIAMETER = 20;
+} // namespace
 
 QNodeEditorConnectionGraphicsObject::QNodeEditorConnectionGraphicsObject(
     QNodeEditor& editor,
@@ -31,11 +37,51 @@ void QNodeEditorConnectionGraphicsObject::paint(
     Q_UNUSED(option);
     Q_UNUSED(widget);
 
-    painter->setPen({ Qt::black, 5 });
-    painter->drawLine(sourcePosition(), targetPosition());
+    QPainterPath path;
+    path.moveTo(sourcePosition());
+    if (sourcePosition().x() == targetPosition().x()) {
+        path.lineTo(targetPosition());
+    } else {
+        // draw horizontal line from source to the middle
+        // continue with arc to a vertical line
+        // continue with arc to a horizontal line untli the target
+        double diameter = std::min(
+            ARC_DIAMETER,
+            std::min(boundingRect().width(), boundingRect().height())
+        );
+        path.lineTo(
+            sourcePosition().x() + boundingRect().width() / 2.0 -
+                diameter / 2.0,
+            sourcePosition().y()
+        );
+        path.arcTo(
+            QRectF { sourcePosition().x() + boundingRect().width() / 2.0 -
+                         diameter,
+                     sourcePosition().y() - diameter,
+                     diameter,
+                     diameter },
+            270,
+            90
+        );
+        path.lineTo(
+            sourcePosition().x() + boundingRect().width() / 2.0,
+            targetPosition().y() + diameter / 2.0
+        );
+        path.arcTo(
+            QRectF { sourcePosition().x() + boundingRect().width() / 2.0,
+                     targetPosition().y(),
+                     diameter,
+                     diameter },
+            180,
+            -90
+        );
+        path.lineTo(targetPosition());
+    }
 
+    painter->setPen({ Qt::black, 5 });
+    painter->drawPath(path);
     painter->setPen({ Qt::yellow, 3 });
-    painter->drawLine(sourcePosition(), targetPosition());
+    painter->drawPath(path);
 }
 
 QPointF QNodeEditorConnectionGraphicsObject::sourcePosition() const
