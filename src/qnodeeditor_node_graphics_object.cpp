@@ -22,7 +22,10 @@ QNodeEditorNodeGraphicsObject::QNodeEditorNodeGraphicsObject(
 )
     : QGraphicsObject(parent)
     , _index(index)
+    , _state(QStyle::State_None)
 {
+    setAcceptHoverEvents(true);
+
     std::size_t portIndex = 0;
     for (auto& port : _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
                           .value<QList<std::shared_ptr<QNodeEditorPort>>>()) {
@@ -76,7 +79,7 @@ void QNodeEditorNodeGraphicsObject::paint(
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->save();
-    QPen pen { Qt::black, 2 };
+    QPen pen { _state & QStyle::State_MouseOver ? Qt::darkRed : Qt::black, 2 };
     QLinearGradient gradient { boundingRect().topLeft(),
                                boundingRect().bottomLeft() };
     gradient.setColorAt(
@@ -105,4 +108,22 @@ void QNodeEditorNodeGraphicsObject::paint(
         Qt::AlignHCenter | Qt::TextSingleLine,
         _index.data(Qt::DisplayRole).toString()
     );
+}
+
+void QNodeEditorNodeGraphicsObject::hoverEnterEvent(
+    QGraphicsSceneHoverEvent* event
+)
+{
+    Q_UNUSED(event);
+    _state |= QStyle::State_MouseOver;
+    update();
+}
+
+void QNodeEditorNodeGraphicsObject::hoverLeaveEvent(
+    QGraphicsSceneHoverEvent* event
+)
+{
+    Q_UNUSED(event);
+    _state &= ~QStyle::State_MouseOver;
+    update();
 }

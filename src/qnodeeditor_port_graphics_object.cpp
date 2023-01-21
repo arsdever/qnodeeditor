@@ -9,6 +9,7 @@ QNodeEditorPortGraphicsObject::QNodeEditorPortGraphicsObject(
 )
     : QGraphicsObject(parent)
     , _port(port)
+    , _state(QStyle::State_None)
 {
     setAcceptHoverEvents(true);
 }
