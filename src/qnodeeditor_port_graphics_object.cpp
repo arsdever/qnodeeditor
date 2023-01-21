@@ -1,7 +1,8 @@
 #include <QPainter>
 
-#include "qnodeeditor/qnodeeditor_port.hpp"
 #include "qnodeeditor_port_graphics_object.hpp"
+
+#include "qnodeeditor/qnodeeditor_port.hpp"
 
 QNodeEditorPortGraphicsObject::QNodeEditorPortGraphicsObject(
     std::shared_ptr<QNodeEditorPort> port, QGraphicsItem* parent
@@ -9,20 +10,42 @@ QNodeEditorPortGraphicsObject::QNodeEditorPortGraphicsObject(
     : QGraphicsObject(parent)
     , _port(port)
 {
+    setAcceptHoverEvents(true);
 }
 
 QRectF QNodeEditorPortGraphicsObject::boundingRect() const
 {
-    return QRectF(-6, -6, 12, 12);
+    return QRectF(-8, -8, 16, 16);
 }
 
 void QNodeEditorPortGraphicsObject::paint(
     QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget
 )
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     painter->save();
-    painter->setPen(QPen(Qt::black, 3));
+    painter->setPen(QPen(Qt::black, _state & QStyle::State_MouseOver ? 3 : 2));
     painter->setBrush(Qt::green);
-    painter->drawEllipse(boundingRect());
+    painter->drawEllipse(
+        _state & QStyle::State_MouseOver ? boundingRect()
+                                         : boundingRect().adjusted(2, 2, -2, -2)
+    );
     painter->restore();
+}
+
+void QNodeEditorPortGraphicsObject::hoverEnterEvent(
+    QGraphicsSceneHoverEvent* event
+)
+{
+    _state |= QStyle::State_MouseOver;
+    update();
+}
+
+void QNodeEditorPortGraphicsObject::hoverLeaveEvent(
+    QGraphicsSceneHoverEvent* event
+)
+{
+    _state &= ~QStyle::State_MouseOver;
+    update();
 }

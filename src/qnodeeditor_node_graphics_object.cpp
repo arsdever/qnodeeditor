@@ -14,6 +14,7 @@ namespace
 static constexpr float PORT_SIZE = 10;
 static constexpr float PORT_SPACING = 20;
 static constexpr float NODE_PADDING = 10;
+static constexpr float TITLE_HEIGHT = 20;
 } // namespace
 
 QNodeEditorNodeGraphicsObject::QNodeEditorNodeGraphicsObject(
@@ -27,9 +28,7 @@ QNodeEditorNodeGraphicsObject::QNodeEditorNodeGraphicsObject(
                           .value<QList<std::shared_ptr<QNodeEditorPort>>>()) {
         QGraphicsItem* item = new QNodeEditorPortGraphicsObject(port, this);
         item->setPos(
-            0,
-            (portIndex + .5) * PORT_SPACING + NODE_PADDING +
-                QPainter().fontMetrics().height()
+            0, (portIndex + .5) * PORT_SPACING + NODE_PADDING + TITLE_HEIGHT
         );
         ++portIndex;
     }
@@ -40,8 +39,7 @@ QNodeEditorNodeGraphicsObject::QNodeEditorNodeGraphicsObject(
         QGraphicsItem* item = new QNodeEditorPortGraphicsObject(port, this);
         item->setPos(
             boundingRect().width(),
-            (portIndex + .5) * PORT_SPACING + NODE_PADDING +
-                QPainter().fontMetrics().height()
+            (portIndex + .5) * PORT_SPACING + NODE_PADDING + TITLE_HEIGHT
         );
         ++portIndex;
     }
@@ -59,7 +57,7 @@ QRectF QNodeEditorNodeGraphicsObject::boundingRect() const
     );
 
     std::size_t height =
-        3 * NODE_PADDING + QPainter().fontMetrics().height() +
+        3 * NODE_PADDING + TITLE_HEIGHT +
         std::max(0, static_cast<int>(maxPortCount) - 1) * PORT_SPACING;
 
     return QRectF(
@@ -75,6 +73,8 @@ void QNodeEditorNodeGraphicsObject::paint(
     QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget
 )
 {
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
     painter->save();
     QPen pen { Qt::black, 2 };
     QLinearGradient gradient { boundingRect().topLeft(),
@@ -99,7 +99,7 @@ void QNodeEditorNodeGraphicsObject::paint(
     QRectF titleRect = { boundingRect().left() + NODE_PADDING,
                          boundingRect().top() + NODE_PADDING,
                          boundingRect().width() - NODE_PADDING * 2,
-                         static_cast<double>(painter->fontMetrics().height()) };
+                         TITLE_HEIGHT };
     painter->drawText(
         titleRect,
         Qt::AlignHCenter | Qt::TextSingleLine,
