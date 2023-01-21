@@ -3,7 +3,7 @@
 #include <QAbstractGraphicsShapeItem>
 #include <QModelIndex>
 
-class QNodeEditorNodeGraphicsItem : public QAbstractGraphicsShapeItem
+class QNodeEditorNodeGraphicsItem : public QGraphicsObject
 {
 public:
     explicit QNodeEditorNodeGraphicsItem(

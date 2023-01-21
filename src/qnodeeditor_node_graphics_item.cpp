@@ -17,7 +17,7 @@ static constexpr float NODE_PADDING = 10;
 QNodeEditorNodeGraphicsItem::QNodeEditorNodeGraphicsItem(
     QModelIndex index, QGraphicsItem* parent
 )
-    : QAbstractGraphicsShapeItem(parent)
+    : QGraphicsObject(parent)
     , _index(index)
 {
 }
