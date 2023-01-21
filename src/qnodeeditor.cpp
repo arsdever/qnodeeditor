@@ -6,7 +6,7 @@
 #include "qnodeeditor/qnodeeditor.hpp"
 
 #include "qnodeeditor/qnodeeditor_tree.hpp"
-#include "qnodeeditor_node_graphics_item.hpp"
+#include "qnodeeditor_node_graphics_object.hpp"
 #include "qnodeeditor_tree_model.hpp"
 
 namespace
@@ -33,7 +33,7 @@ void QNodeEditor::setTree(QNodeEditorTree* tree)
     setupModelConnections(tree->model());
     for (int i = 0; i < tree->model()->rowCount(); ++i) {
         auto index = tree->model()->index(i, 0);
-        QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+        QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
         item->setPos( // TODO fix me
             index.row() * 150,
             0
@@ -118,7 +118,7 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
         this,
         [ model, this ](const QModelIndex& parent, int first, int last) {
         auto index = model->index(first, 0);
-        QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+        QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
         item->setPos( // TODO fix me
             index.row() * 150,
             0
@@ -153,7 +153,7 @@ void QNodeEditor::setupModelConnections(QAbstractItemModel* model)
 
         for (int i = 0; i < _tree->model()->rowCount(); ++i) {
             auto index = _tree->model()->index(i, 0);
-            QGraphicsItem* item = new QNodeEditorNodeGraphicsItem(index);
+            QGraphicsItem* item = new QNodeEditorNodeGraphicsObject(index);
             item->setPos( // TODO fix me
                 index.row() * 150,
                 0

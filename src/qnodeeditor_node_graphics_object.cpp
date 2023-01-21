@@ -3,8 +3,9 @@
 #include <QLinearGradient>
 #include <QPainter>
 
-#include "qnodeeditor_node_graphics_item.hpp"
+#include "qnodeeditor_node_graphics_object.hpp"
 
+#include "qnodeeditor_port_graphics_object.hpp"
 #include "qnodeeditor_tree_model.hpp"
 
 namespace
@@ -15,15 +16,38 @@ static constexpr float PORT_SPACING = 20;
 static constexpr float NODE_PADDING = 10;
 } // namespace
 
-QNodeEditorNodeGraphicsItem::QNodeEditorNodeGraphicsItem(
+QNodeEditorNodeGraphicsObject::QNodeEditorNodeGraphicsObject(
     QModelIndex index, QGraphicsItem* parent
 )
     : QGraphicsObject(parent)
     , _index(index)
 {
+    std::size_t portIndex = 0;
+    for (auto& port : _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
+                          .value<QList<std::shared_ptr<QNodeEditorPort>>>()) {
+        QGraphicsItem* item = new QNodeEditorPortGraphicsObject(port, this);
+        item->setPos(
+            0,
+            (portIndex + .5) * PORT_SPACING + NODE_PADDING +
+                QPainter().fontMetrics().height()
+        );
+        ++portIndex;
+    }
+
+    portIndex = 0;
+    for (auto& port : _index.data(QNodeEditorTreeModel::NodeDataRole::Outputs)
+                          .value<QList<std::shared_ptr<QNodeEditorPort>>>()) {
+        QGraphicsItem* item = new QNodeEditorPortGraphicsObject(port, this);
+        item->setPos(
+            boundingRect().width(),
+            (portIndex + .5) * PORT_SPACING + NODE_PADDING +
+                QPainter().fontMetrics().height()
+        );
+        ++portIndex;
+    }
 }
 
-QRectF QNodeEditorNodeGraphicsItem::boundingRect() const
+QRectF QNodeEditorNodeGraphicsObject::boundingRect() const
 {
     std::size_t maxPortCount = std::max(
         _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
@@ -47,7 +71,7 @@ QRectF QNodeEditorNodeGraphicsItem::boundingRect() const
     );
 }
 
-void QNodeEditorNodeGraphicsItem::paint(
+void QNodeEditorNodeGraphicsObject::paint(
     QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget
 )
 {
@@ -81,54 +105,4 @@ void QNodeEditorNodeGraphicsItem::paint(
         Qt::AlignHCenter | Qt::TextSingleLine,
         _index.data(Qt::DisplayRole).toString()
     );
-    painter->fillRect(titleRect, QColor(0, 0, 0, 64));
-    auto inputPorts = _index.data(QNodeEditorTreeModel::NodeDataRole::Inputs)
-                          .value<QList<std::shared_ptr<QNodeEditorPort>>>();
-    auto outputPorts = _index.data(QNodeEditorTreeModel::NodeDataRole::Outputs)
-                           .value<QList<std::shared_ptr<QNodeEditorPort>>>();
-    painter->save();
-    painter->translate(boundingRect().topLeft());
-    painter->translate(
-        0, PORT_SPACING / 2 + NODE_PADDING + painter->fontMetrics().height()
-    );
-    painter->save();
-    std::for_each(
-        inputPorts.begin(),
-        inputPorts.end(),
-        [ painter ](auto& port) {
-        QPen pen {
-            QColor {23, 85, 12},
-             3
-        };
-        QBrush brush {
-            QColor {45, 213, 54}
-        };
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        painter->drawEllipse(
-            -PORT_SIZE / 2, -PORT_SIZE / 2, PORT_SIZE, PORT_SIZE
-        );
-        painter->translate(0, PORT_SPACING);
-        });
-    painter->restore();
-    painter->translate(boundingRect().width(), 0);
-    std::for_each(
-        outputPorts.begin(),
-        outputPorts.end(),
-        [ painter ](auto& port) {
-        QPen pen {
-            QColor {23, 85, 12},
-             3
-        };
-        QBrush brush {
-            QColor {45, 213, 54}
-        };
-        painter->setPen(pen);
-        painter->setBrush(brush);
-        painter->drawEllipse(
-            -PORT_SIZE / 2, -PORT_SIZE / 2, PORT_SIZE, PORT_SIZE
-        );
-        painter->translate(0, PORT_SPACING);
-        });
-    painter->restore();
 }

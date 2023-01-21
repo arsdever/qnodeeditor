@@ -3,10 +3,10 @@
 #include <QGraphicsObject>
 #include <QModelIndex>
 
-class QNodeEditorNodeGraphicsItem : public QGraphicsObject
+class QNodeEditorNodeGraphicsObject : public QGraphicsObject
 {
 public:
-    explicit QNodeEditorNodeGraphicsItem(
+    explicit QNodeEditorNodeGraphicsObject(
         QModelIndex index, QGraphicsItem* parent = nullptr
     );
 
