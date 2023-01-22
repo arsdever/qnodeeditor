@@ -17,7 +17,7 @@ public:
 
 public:
     uint64_t _id;
-    QList<QNodeEditorConnection*> _connections;
+    QList<QNodeEditorConnection*> _outgoingConnections;
     QList<QNodeEditorPort*> _inputPorts;
     QList<QNodeEditorPort*> _outputPorts;
 };

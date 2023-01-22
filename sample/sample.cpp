@@ -2,6 +2,7 @@
 #include <QTreeView>
 
 #include "qnodeeditor/qnodeeditor.hpp"
+#include "qnodeeditor/qnodeeditor_node.hpp"
 #include "qnodeeditor/qnodeeditor_tree.hpp"
 
 void configureColorScheme()
@@ -52,11 +53,14 @@ void configureColorScheme()
 
 void populateModel(QNodeEditorTree* tree)
 {
-    uint64_t node1Id = tree->addNode();
-    uint64_t node2Id = tree->addNode();
-    uint64_t node3Id = tree->addNode();
+    uint64_t node1Id = tree->addNode()->_id;
+    uint64_t node2Id = tree->addNode()->_id;
+    uint64_t node3Id = tree->addNode()->_id;
+    uint64_t node4Id = tree->addNode()->_id;
     tree->addConnection(node1Id, 0, node2Id, 0);
     tree->addConnection(node1Id, 1, node3Id, 0);
+    tree->addConnection(node1Id, 2, node3Id, 1);
+    tree->addConnection(node2Id, 2, node4Id, 1);
 }
 
 int main(int argc, char** argv)
@@ -70,18 +74,17 @@ int main(int argc, char** argv)
     QTreeView view;
 
     QNodeEditorTree* tree = new QNodeEditorTree();
-    view.setModel(tree->model());
-
     populateModel(tree);
-
-    view.show();
-
-    for (int i = 0; i < tree->model()->columnCount(); ++i)
-        view.resizeColumnToContents(i);
-
     QNodeEditor editor;
     editor.setTree(tree);
+
+    view.setModel(editor.model());
+
+    view.show();
     editor.show();
+
+    for (int i = 0; i < editor.model()->columnCount(); ++i)
+        view.resizeColumnToContents(i);
 
     return app.exec();
 }

@@ -16,7 +16,7 @@ QNodeEditorNode::QNodeEditorNode(uint64_t id)
 
 QNodeEditorNode::~QNodeEditorNode()
 {
-    for (auto& connection : _connections)
+    for (auto& connection : _outgoingConnections)
         delete connection;
     for (auto& port : _inputPorts)
         delete port;

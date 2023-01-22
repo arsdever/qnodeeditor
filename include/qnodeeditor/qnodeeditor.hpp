@@ -4,13 +4,14 @@
 #include <QWidget>
 #include <unordered_map>
 
+class QAbstractItemModel;
 class QGraphicsItem;
 class QGraphicsScene;
 class QGraphicsView;
-class QNodeEditorTree;
-class QNodeEditorTreeModel;
 class QNodeEditorConnection;
 class QNodeEditorPort;
+class QNodeEditorTree;
+class QNodeEditorTreeModel;
 
 enum class PortType { In, Out };
 
@@ -20,6 +21,7 @@ public:
     explicit QNodeEditor(QWidget* parent = nullptr);
 
     void setTree(QNodeEditorTree* tree);
+    QAbstractItemModel* model() const;
 
 private:
     void addGrid();
@@ -38,9 +40,10 @@ private:
     friend class QNodeEditorConnectionGraphicsObject;
 
 private:
-    QGraphicsView* _view;
-    QGraphicsScene* _scene;
-    QNodeEditorTree* _tree;
+    QGraphicsView* _view = nullptr;
+    QGraphicsScene* _scene = nullptr;
+    QNodeEditorTree* _tree = nullptr;
+    QNodeEditorTreeModel* _model = nullptr;
     std::unordered_map<uint64_t, QGraphicsItem*>
         _model_index_graphics_item_mapping;
 };

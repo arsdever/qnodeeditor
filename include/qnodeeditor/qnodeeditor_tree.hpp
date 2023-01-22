@@ -2,8 +2,8 @@
 
 #include <QObject>
 
-class QAbstractItemModel;
-class QNodeEditorTreeModel;
+class QNodeEditorNode;
+class QNodeEditorConnection;
 
 class QNodeEditorTree : public QObject
 {
@@ -11,16 +11,18 @@ public:
     explicit QNodeEditorTree(QObject* parent = nullptr);
     ~QNodeEditorTree();
 
-    uint64_t addNode();
-    void addConnection(
+    QNodeEditorNode* addNode();
+    QNodeEditorConnection* addConnection(
         uint64_t fromNodeId,
         uint64_t fromPort,
         uint64_t toNodeId,
         uint64_t toPort
     );
 
-    QAbstractItemModel* model() const;
+    QNodeEditorNode* node(uint64_t id) const;
+
+    std::size_t nodesCount() const;
 
 private:
-    QNodeEditorTreeModel* _model;
+    std::unordered_map<uint64_t, QNodeEditorNode*> _nodes;
 };

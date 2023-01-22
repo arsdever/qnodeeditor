@@ -7,6 +7,7 @@
 
 Q_DECLARE_METATYPE(std::shared_ptr<QNodeEditorPort>)
 class QNodeEditorConnection;
+class QNodeEditorTree;
 
 class QNodeEditorTreeModel : public QAbstractListModel
 {
@@ -25,13 +26,16 @@ public:
     explicit QNodeEditorTreeModel(QObject* parent = nullptr);
     ~QNodeEditorTreeModel() override;
 
-    uint64_t addNode();
-    void addConnection(
+    QNodeEditorNode* addNode();
+    QNodeEditorConnection* addConnection(
         uint64_t fromNodeId,
         uint64_t fromPort,
         uint64_t toNodeId,
         uint64_t toPort
     );
+
+    void setTree(QNodeEditorTree* tree);
+    QNodeEditorTree* tree() const;
 
 #pragma region QAbstractItemModel
     QModelIndex index(
@@ -49,8 +53,7 @@ signals:
     void connectionAdded(QNodeEditorConnection* connection);
 
 private:
-    QNodeEditorNode* _root;
-    std::unordered_map<uint64_t, QNodeEditorNode*> _nodes;
+    QNodeEditorTree* _tree;
 
     static uint64_t idCounter;
 };

@@ -34,12 +34,19 @@ QNodeEditor::QNodeEditor(QWidget* parent)
 void QNodeEditor::setTree(QNodeEditorTree* tree)
 {
     _tree = tree;
-    setupModelConnections(qobject_cast<QNodeEditorTreeModel*>(tree->model()));
-    for (int i = 0; i < _tree->model()->rowCount(); ++i) {
-        auto index = _tree->model()->index(i, 0);
+    if (_model)
+        _model->deleteLater();
+
+    _model = new QNodeEditorTreeModel(this);
+    _model->setTree(_tree);
+    setupModelConnections(_model);
+    for (int i = 0; i < _model->rowCount(); ++i) {
+        auto index = _model->index(i, 0);
         addNodeGraphics(index);
     }
 }
+
+QAbstractItemModel* QNodeEditor::model() const { return _model; }
 
 void QNodeEditor::addGrid()
 {
@@ -131,8 +138,8 @@ void QNodeEditor::setupModelConnections(QNodeEditorTreeModel* model)
     });
 
     connect(model, &QAbstractItemModel::modelReset, this, [ this ]() {
-        for (int i = 0; i < _tree->model()->rowCount(); ++i) {
-            auto index = _tree->model()->index(i, 0);
+        for (int i = 0; i < _model->rowCount(); ++i) {
+            auto index = _model->index(i, 0);
             addNodeGraphics(index);
         }
     });

@@ -15,7 +15,7 @@ public:
     );
 
 public:
-    QNodeEditorNode* _node;
+    QNodeEditorNode* _node = nullptr;
     uint64_t _index;
     PortType _type;
     std::string _name;
