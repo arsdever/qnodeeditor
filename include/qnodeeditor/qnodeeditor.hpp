@@ -37,6 +37,7 @@ private:
     QPointF getPortPosition(QNodeEditorPort* port) const;
 
 private:
+    friend class QNodeEditorLayoutAlgorithm;
     friend class QNodeEditorConnectionGraphicsObject;
 
 private:

@@ -49,6 +49,7 @@ QNodeEditorConnection* QNodeEditorTree::addConnection(
                                     toNode->_inputPorts.at(toPort) };
 
     fromNode->_outgoingConnections.push_back(connection);
+    toNode->_incomingConnections.push_back(connection);
 
     return connection;
 }
@@ -56,6 +57,16 @@ QNodeEditorConnection* QNodeEditorTree::addConnection(
 QNodeEditorNode* QNodeEditorTree::node(uint64_t id) const
 {
     return _nodes.at(id);
+}
+
+bool QNodeEditorTree::forEachNode(std::function<bool(QNodeEditorNode*)> callback
+) const
+{
+    for (auto& node : _nodes)
+        if (!callback(node.second))
+            return false;
+
+    return true;
 }
 
 std::size_t QNodeEditorTree::nodesCount() const { return _nodes.size(); }

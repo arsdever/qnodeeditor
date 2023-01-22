@@ -16,8 +16,11 @@ QNodeEditorNode::QNodeEditorNode(uint64_t id)
 
 QNodeEditorNode::~QNodeEditorNode()
 {
-    for (auto& connection : _outgoingConnections)
+    // ingoing connections should be deleted by the nodes they are connected to
+    for (auto& connection : _outgoingConnections) {
+        connection->_to->_node->_incomingConnections.removeOne(connection);
         delete connection;
+    }
     for (auto& port : _inputPorts)
         delete port;
     for (auto& port : _outputPorts)

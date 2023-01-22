@@ -56,7 +56,7 @@ int QNodeEditorTreeModel::rowCount(const QModelIndex& parent) const
 
 int QNodeEditorTreeModel::columnCount(const QModelIndex& parent) const
 {
-    return 3;
+    return 4;
 }
 
 QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
@@ -76,6 +76,7 @@ QVariant QNodeEditorTreeModel::data(const QModelIndex& index, int role) const
                     return index.data(Outputs)
                         .value<QList<QNodeEditorPort*>>()
                         .size();
+                case 3: return _tree->node(index.internalId())->_rank;
             }
         }
         case NodeId: return index.row();
@@ -112,6 +113,7 @@ QVariant QNodeEditorTreeModel::headerData(
                 case 0: return "Name";
                 case 1: return "Inputs";
                 case 2: return "Outputs";
+                case 3: return "Rank";
                 default: return {};
             }
         }

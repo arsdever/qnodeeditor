@@ -20,6 +20,7 @@ public:
     );
 
     QNodeEditorNode* node(uint64_t id) const;
+    bool forEachNode(std::function<bool(QNodeEditorNode*)> callback) const;
 
     std::size_t nodesCount() const;
 

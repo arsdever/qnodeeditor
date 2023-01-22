@@ -2,6 +2,7 @@
 #include <QTreeView>
 
 #include "qnodeeditor/qnodeeditor.hpp"
+#include "qnodeeditor/qnodeeditor_flow_layout_algorithm.hpp"
 #include "qnodeeditor/qnodeeditor_node.hpp"
 #include "qnodeeditor/qnodeeditor_tree.hpp"
 
@@ -77,6 +78,9 @@ int main(int argc, char** argv)
     populateModel(tree);
     QNodeEditor editor;
     editor.setTree(tree);
+
+    QNodeEditorFlowLayoutAlgorithm layoutAlgorithm(editor);
+    layoutAlgorithm.apply();
 
     view.setModel(editor.model());
 
