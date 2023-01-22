@@ -2,6 +2,7 @@
 
 class QNodeEditor;
 class QNodeEditorTree;
+class QNodeEditorNodeGraphicsObject;
 
 class QNodeEditorLayoutAlgorithm
 {
@@ -13,6 +14,7 @@ public:
 
 protected:
     QNodeEditorTree* getTree() const;
+    QNodeEditorNodeGraphicsObject* getGraphics(uint64_t id) const;
 
 protected:
     QNodeEditor& _editor;
