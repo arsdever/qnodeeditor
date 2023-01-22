@@ -220,20 +220,44 @@ void QNodeEditorConnectionGraphicsObject::recalculateDrawingShape(
             )
         );
         _drawShape.lineTo(centerPoint.x() - diameter / 2.0, sourcePoint.y());
-        _drawShape.arcTo(
-            QRectF { centerPoint.x() - diameter,
-                     sourcePoint.y() - diameter,
-                     diameter,
-                     diameter },
-            270,
-            90
-        );
-        _drawShape.lineTo(centerPoint.x(), targetPoint.y() + diameter / 2.0);
-        _drawShape.arcTo(
-            QRectF { centerPoint.x(), targetPoint.y(), diameter, diameter },
-            180,
-            -90
-        );
+        if (sourcePoint.y() > targetPoint.y()) {
+            _drawShape.arcTo(
+                QRectF { centerPoint.x() - diameter,
+                         sourcePoint.y() - diameter,
+                         diameter,
+                         diameter },
+                270,
+                90
+            );
+            _drawShape.lineTo(
+                centerPoint.x(), targetPoint.y() + diameter / 2.0
+            );
+            _drawShape.arcTo(
+                QRectF { centerPoint.x(), targetPoint.y(), diameter, diameter },
+                180,
+                -90
+            );
+        } else {
+            _drawShape.arcTo(
+                QRectF { centerPoint.x() - diameter,
+                         sourcePoint.y(),
+                         diameter,
+                         diameter },
+                90,
+                -90
+            );
+            _drawShape.lineTo(
+                centerPoint.x(), targetPoint.y() - diameter / 2.0
+            );
+            _drawShape.arcTo(
+                QRectF { centerPoint.x(),
+                         targetPoint.y() - diameter,
+                         diameter,
+                         diameter },
+                180,
+                90
+            );
+        }
         _drawShape.lineTo(targetPoint);
     }
 }
