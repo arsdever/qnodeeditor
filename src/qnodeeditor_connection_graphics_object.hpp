@@ -22,6 +22,7 @@ public:
         const QStyleOptionGraphicsItem* option,
         QWidget* widget = nullptr
     ) override;
+    QPainterPath shape() const override;
 
 protected:
     void hoverEnterEvent(QGraphicsSceneHoverEvent* event) override;
@@ -31,9 +32,15 @@ protected:
 private:
     QPointF sourcePosition() const;
     QPointF targetPosition() const;
+	void recalculateShape(QPointF sourcePoint, QPointF targetPoint) const;
+	void recalculateDrawingShape(QPointF sourcePoint, QPointF targetPoint) const;
 
 private:
     QNodeEditor& _editor;
     QNodeEditorConnection* _connection;
     QStyle::State _state;
+    mutable QPointF _cachedSourcePosition;
+    mutable QPointF _cachedTargetPosition;
+    mutable QPainterPath _shape;
+    mutable QPainterPath _drawShape;
 };
