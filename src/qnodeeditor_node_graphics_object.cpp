@@ -127,16 +127,16 @@ void QNodeEditorNodeGraphicsObject::hoverEnterEvent(
     QGraphicsSceneHoverEvent* event
 )
 {
-    Q_UNUSED(event);
     _state |= QStyle::State_MouseOver;
     update();
+	QGraphicsObject::hoverEnterEvent(event);
 }
 
 void QNodeEditorNodeGraphicsObject::hoverLeaveEvent(
     QGraphicsSceneHoverEvent* event
 )
 {
-    Q_UNUSED(event);
     _state &= ~QStyle::State_MouseOver;
     update();
+	QGraphicsObject::hoverLeaveEvent(event);
 }

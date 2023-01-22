@@ -41,6 +41,7 @@ void QNodeEditorPortGraphicsObject::hoverEnterEvent(
 {
     _state |= QStyle::State_MouseOver;
     update();
+	QGraphicsObject::hoverEnterEvent(event);
 }
 
 void QNodeEditorPortGraphicsObject::hoverLeaveEvent(
@@ -49,4 +50,5 @@ void QNodeEditorPortGraphicsObject::hoverLeaveEvent(
 {
     _state &= ~QStyle::State_MouseOver;
     update();
+	QGraphicsObject::hoverLeaveEvent(event);
 }

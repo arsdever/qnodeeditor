@@ -20,6 +20,7 @@ QNodeEditorConnectionGraphicsObject::QNodeEditorConnectionGraphicsObject(
     : QGraphicsObject(parent)
     , _editor(editor)
     , _connection(connection)
+    , _state(QStyle::State_None)
 {
     setAcceptHoverEvents(true);
     setZValue(1);
@@ -78,10 +79,29 @@ void QNodeEditorConnectionGraphicsObject::paint(
         path.lineTo(targetPosition());
     }
 
-    painter->setPen({ Qt::black, 5 });
+    painter->setPen(QPen { Qt::black, 5 });
     painter->drawPath(path);
-    painter->setPen({ Qt::yellow, 3 });
+    painter->setPen(QPen { Qt::yellow,
+                           (_state & QStyle::State_MouseOver) ? 4.0 : 2.0 });
     painter->drawPath(path);
+}
+
+void QNodeEditorConnectionGraphicsObject::hoverEnterEvent(
+    QGraphicsSceneHoverEvent* event
+)
+{
+    _state |= QStyle::State_MouseOver;
+    update();
+    QGraphicsObject::hoverEnterEvent(event);
+}
+
+void QNodeEditorConnectionGraphicsObject::hoverLeaveEvent(
+    QGraphicsSceneHoverEvent* event
+)
+{
+    _state &= ~QStyle::State_MouseOver;
+    update();
+    QGraphicsObject::hoverLeaveEvent(event);
 }
 
 QPointF QNodeEditorConnectionGraphicsObject::sourcePosition() const
