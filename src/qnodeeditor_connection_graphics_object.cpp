@@ -10,7 +10,6 @@
 namespace
 {
 // check the shape when changing the ARC_DIAMETER
-static constexpr double ARC_DIAMETER = 20;
 static constexpr double SHAPE_CLEARANCE = 5;
 } // namespace
 
@@ -131,133 +130,75 @@ void QNodeEditorConnectionGraphicsObject::recalculateShape(
     if (sourcePoint != _cachedSourcePosition ||
         targetPoint != _cachedTargetPosition) {
         _shape.clear();
+        _shape.moveTo(
+            sourcePoint.x() + SHAPE_CLEARANCE, sourcePoint.y() + SHAPE_CLEARANCE
+        );
         if (sourcePoint.x() == targetPoint.x() ||
             sourcePoint.y() == targetPoint.y()) {
-            _shape.addRect(QRectF(sourcePoint, targetPoint)
-                               .normalized()
-                               .adjusted(
-                                   SHAPE_CLEARANCE,
-                                   -SHAPE_CLEARANCE,
-                                   -SHAPE_CLEARANCE,
-                                   SHAPE_CLEARANCE
-                               ));
-        } else {
-            double diameter = std::min(
-                ARC_DIAMETER,
-                std::min(
-                    boundingRect().width() - SHAPE_CLEARANCE,
-                    boundingRect().height() - SHAPE_CLEARANCE
-                )
+            _shape.lineTo(
+                targetPoint.x() - SHAPE_CLEARANCE,
+                targetPoint.y() + SHAPE_CLEARANCE
             );
+            _shape.lineTo(
+                targetPoint.x() - SHAPE_CLEARANCE,
+                targetPoint.y() - SHAPE_CLEARANCE
+            );
+            _shape.lineTo(
+                sourcePoint.x() + SHAPE_CLEARANCE,
+                sourcePoint.y() - SHAPE_CLEARANCE
+            );
+        } else {
             QPointF centerPoint = QPointF(
                 (sourcePoint.x() + targetPoint.x()) / 2.0,
                 (sourcePoint.y() + targetPoint.y()) / 2.0
             );
-            QRegion region;
-            region = region.united(
-                QRectF(sourcePoint, QPointF(centerPoint.x(), sourcePoint.y()))
-                    .normalized()
-                    .adjusted(
-                        SHAPE_CLEARANCE,
-                        -SHAPE_CLEARANCE,
-                        -SHAPE_CLEARANCE,
-                        SHAPE_CLEARANCE
-                    )
-                    .toRect()
+            _shape.cubicTo(
+                centerPoint.x(),
+                sourcePoint.y() + SHAPE_CLEARANCE,
+                centerPoint.x(),
+                targetPoint.y() + SHAPE_CLEARANCE,
+                targetPoint.x() - SHAPE_CLEARANCE,
+                targetPoint.y() + SHAPE_CLEARANCE
             );
-            region =
-                region.united(QRectF(
-                                  QPointF(centerPoint.x(), sourcePoint.y()),
-                                  QPointF(centerPoint.x(), targetPoint.y())
-                )
-                                  .normalized()
-                                  .adjusted(
-                                      -SHAPE_CLEARANCE,
-                                      -SHAPE_CLEARANCE,
-                                      SHAPE_CLEARANCE,
-                                      SHAPE_CLEARANCE
-                                  )
-                                  .toRect());
-            region = region.united(
-                QRectF(targetPoint, QPointF(centerPoint.x(), targetPoint.y()))
-                    .normalized()
-                    .adjusted(
-                        -SHAPE_CLEARANCE,
-                        -SHAPE_CLEARANCE,
-                        -SHAPE_CLEARANCE,
-                        SHAPE_CLEARANCE
-                    )
-                    .toRect()
+            _shape.lineTo(
+                targetPoint.x() - SHAPE_CLEARANCE,
+                targetPoint.y() - SHAPE_CLEARANCE
             );
-            _shape.addRegion(region);
+            _shape.cubicTo(
+                centerPoint.x(),
+                targetPoint.y() - SHAPE_CLEARANCE,
+                centerPoint.x(),
+                sourcePoint.y() - SHAPE_CLEARANCE,
+                sourcePoint.x() + SHAPE_CLEARANCE,
+                sourcePoint.y() - SHAPE_CLEARANCE
+            );
         }
     }
 }
-
 void QNodeEditorConnectionGraphicsObject::recalculateDrawingShape(
     QPointF sourcePoint, QPointF targetPoint
 ) const
 {
-    _drawShape.clear();
-    _drawShape.moveTo(sourcePoint);
-    if (sourcePoint.x() == targetPoint.x() ||
-        sourcePoint.y() == targetPoint.y()) {
-        _drawShape.lineTo(targetPoint);
-    } else {
-        // draw horizontal line from source to the middle
-        // continue with arc to a vertical line
-        // continue with arc to a horizontal line untli the target
-        QPointF centerPoint = QPointF(
-            (sourcePoint.x() + targetPoint.x()) / 2.0,
-            (sourcePoint.y() + targetPoint.y()) / 2.0
-        );
-
-        double diameter = std::min(
-            ARC_DIAMETER,
-            std::min(
-                boundingRect().width() - SHAPE_CLEARANCE,
-                boundingRect().height() - SHAPE_CLEARANCE
-            )
-        );
-        _drawShape.lineTo(centerPoint.x() - diameter / 2.0, sourcePoint.y());
-        if (sourcePoint.y() > targetPoint.y()) {
-            _drawShape.arcTo(
-                QRectF { centerPoint.x() - diameter,
-                         sourcePoint.y() - diameter,
-                         diameter,
-                         diameter },
-                270,
-                90
-            );
-            _drawShape.lineTo(
-                centerPoint.x(), targetPoint.y() + diameter / 2.0
-            );
-            _drawShape.arcTo(
-                QRectF { centerPoint.x(), targetPoint.y(), diameter, diameter },
-                180,
-                -90
-            );
+    if (sourcePoint != _cachedSourcePosition ||
+        targetPoint != _cachedTargetPosition) {
+        _drawShape.clear();
+        _drawShape.moveTo(sourcePoint);
+        if (sourcePoint.x() == targetPoint.x() ||
+            sourcePoint.y() == targetPoint.y()) {
+            _drawShape.lineTo(targetPoint);
         } else {
-            _drawShape.arcTo(
-                QRectF { centerPoint.x() - diameter,
-                         sourcePoint.y(),
-                         diameter,
-                         diameter },
-                90,
-                -90
+            QPointF centerPoint = QPointF(
+                (sourcePoint.x() + targetPoint.x()) / 2.0,
+                (sourcePoint.y() + targetPoint.y()) / 2.0
             );
-            _drawShape.lineTo(
-                centerPoint.x(), targetPoint.y() - diameter / 2.0
-            );
-            _drawShape.arcTo(
-                QRectF { centerPoint.x(),
-                         targetPoint.y() - diameter,
-                         diameter,
-                         diameter },
-                180,
-                90
+            _drawShape.cubicTo(
+                centerPoint.x(),
+                sourcePoint.y(),
+                centerPoint.x(),
+                targetPoint.y(),
+                targetPoint.x(),
+                targetPoint.y()
             );
         }
-        _drawShape.lineTo(targetPoint);
     }
 }
