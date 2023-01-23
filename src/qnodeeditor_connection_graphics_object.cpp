@@ -31,7 +31,7 @@ QNodeEditorConnectionGraphicsObject::QNodeEditorConnectionGraphicsObject(
     _cachedTargetPosition = tp;
 
     setAcceptHoverEvents(true);
-    setZValue(1);
+    setZValue(-1);
 }
 
 QRectF QNodeEditorConnectionGraphicsObject::boundingRect() const

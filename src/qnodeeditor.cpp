@@ -64,14 +64,14 @@ void QNodeEditor::addGrid()
             (i - GRID_COUNT / 2) * 10,
             100000,
             pen
-        );
+        )->setZValue(-1000000);
         _scene->addLine(
             -100000,
             (i - GRID_COUNT / 2) * 10,
             100000,
             (i - GRID_COUNT / 2) * 10,
             pen
-        );
+        )->setZValue(-1000000);
     }
 
     for (int i = 0; i < GRID_COUNT; i += 10) {
@@ -85,14 +85,14 @@ void QNodeEditor::addGrid()
             (i - GRID_COUNT / 2) * 10,
             100000,
             pen
-        );
+        )->setZValue(-1000000);
         _scene->addLine(
             -100000,
             (i - GRID_COUNT / 2) * 10,
             100000,
             (i - GRID_COUNT / 2) * 10,
             pen
-        );
+        )->setZValue(-1000000);
     }
 
     QPen pen = QPen(palette().color(QPalette::Window).lighter(200), 5);
