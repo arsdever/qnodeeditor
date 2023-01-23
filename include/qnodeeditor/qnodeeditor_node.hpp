@@ -17,8 +17,6 @@ public:
 
 public:
     uint64_t _id;
-    // TODO remove later
-    uint64_t _rank;
     QList<QNodeEditorConnection*> _incomingConnections;
     QList<QNodeEditorConnection*> _outgoingConnections;
     QList<QNodeEditorPort*> _inputPorts;

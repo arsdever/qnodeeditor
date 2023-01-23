@@ -59,7 +59,6 @@ void QNodeEditorFlowLayoutAlgorithm::calculateRanks()
         if (node->_incomingConnections.empty()) {
             // BFS to rank all nodes
             _ranks[ node->_id ] = 0;
-            node->_rank = 0;
 
             std::queue<QNodeEditorNode*> queue;
             for (auto& connection : node->_outgoingConnections)
@@ -77,7 +76,6 @@ void QNodeEditorFlowLayoutAlgorithm::calculateRanks()
                         maxRank = rank;
                 }
                 _ranks[ node->_id ] = maxRank + 1;
-                node->_rank = maxRank + 1;
 
                 for (auto& connection : node->_outgoingConnections)
                     queue.push(connection->_to->_node);
