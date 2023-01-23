@@ -58,10 +58,24 @@ void populateModel(QNodeEditorTree* tree)
     uint64_t node2Id = tree->addNode()->_id;
     uint64_t node3Id = tree->addNode()->_id;
     uint64_t node4Id = tree->addNode()->_id;
+    uint64_t node5Id = tree->addNode()->_id;
+    uint64_t node6Id = tree->addNode()->_id;
+    uint64_t node7Id = tree->addNode()->_id;
+    uint64_t node8Id = tree->addNode()->_id;
+    uint64_t node9Id = tree->addNode()->_id;
     tree->addConnection(node1Id, 0, node2Id, 0);
     tree->addConnection(node1Id, 1, node3Id, 0);
     tree->addConnection(node1Id, 2, node3Id, 1);
+    tree->addConnection(node1Id, 3, node9Id, 1);
+    tree->addConnection(node2Id, 1, node3Id, 1);
     tree->addConnection(node2Id, 2, node4Id, 1);
+    tree->addConnection(node2Id, 2, node9Id, 0);
+    tree->addConnection(node3Id, 0, node5Id, 0);
+    tree->addConnection(node3Id, 0, node4Id, 0);
+    tree->addConnection(node4Id, 0, node7Id, 0);
+    tree->addConnection(node5Id, 0, node6Id, 0);
+    tree->addConnection(node7Id, 0, node6Id, 0);
+    tree->addConnection(node7Id, 0, node8Id, 0);
 }
 
 int main(int argc, char** argv)
