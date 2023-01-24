@@ -1,6 +1,10 @@
 #include <QApplication>
+#include <QTreeView>
 
 #include "qnodeeditor/qnodeeditor.hpp"
+#include "qnodeeditor/qnodeeditor_flow_layout_algorithm.hpp"
+#include "qnodeeditor/qnodeeditor_node.hpp"
+#include "qnodeeditor/qnodeeditor_tree.hpp"
 
 void configureColorScheme()
 {
@@ -48,6 +52,32 @@ void configureColorScheme()
 #endif
 }
 
+void populateModel(QNodeEditorTree* tree)
+{
+    uint64_t node1Id = tree->addNode()->_id;
+    uint64_t node2Id = tree->addNode()->_id;
+    uint64_t node3Id = tree->addNode()->_id;
+    uint64_t node4Id = tree->addNode()->_id;
+    uint64_t node5Id = tree->addNode()->_id;
+    uint64_t node6Id = tree->addNode()->_id;
+    uint64_t node7Id = tree->addNode()->_id;
+    uint64_t node8Id = tree->addNode()->_id;
+    uint64_t node9Id = tree->addNode()->_id;
+    tree->addConnection(node1Id, 0, node2Id, 0);
+    tree->addConnection(node1Id, 1, node3Id, 0);
+    tree->addConnection(node1Id, 2, node3Id, 1);
+    tree->addConnection(node1Id, 3, node9Id, 1);
+    tree->addConnection(node2Id, 1, node3Id, 1);
+    tree->addConnection(node2Id, 2, node4Id, 1);
+    tree->addConnection(node2Id, 2, node9Id, 0);
+    tree->addConnection(node3Id, 0, node5Id, 0);
+    tree->addConnection(node3Id, 0, node4Id, 0);
+    tree->addConnection(node4Id, 0, node7Id, 0);
+    tree->addConnection(node5Id, 0, node6Id, 0);
+    tree->addConnection(node7Id, 0, node6Id, 0);
+    tree->addConnection(node7Id, 0, node8Id, 0);
+}
+
 int main(int argc, char** argv)
 {
     Q_INIT_RESOURCE(qnodeeditor_resources);
@@ -56,8 +86,23 @@ int main(int argc, char** argv)
 
     configureColorScheme();
 
+    QTreeView view;
+
+    QNodeEditorTree* tree = new QNodeEditorTree();
+    populateModel(tree);
     QNodeEditor editor;
+    editor.setTree(tree);
+
+    QNodeEditorFlowLayoutAlgorithm layoutAlgorithm(editor);
+    layoutAlgorithm.apply();
+
+    view.setModel(editor.model());
+
+    view.show();
     editor.show();
+
+    for (int i = 0; i < editor.model()->columnCount(); ++i)
+        view.resizeColumnToContents(i);
 
     return app.exec();
 }

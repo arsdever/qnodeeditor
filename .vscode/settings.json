@@ -1,8 +1,8 @@
 {
 	"cmake.configureArgs": [
 		// "-DCMAKE_TOOLCHAIN_FILE=${env:VCPKG_DIR}/scripts/buildsystems/vcpkg.cmake",
-		"-DBUILD_TESTING=TRUE",
-		"-DBUILD_COVERAGE=TRUE",
+		"-DBUILD_TESTING=FALSE",
+		"-DBUILD_COVERAGE=FALSE",
 		"-DQT_VERSION=5"
 	],
 	"files.associations": {
@@ -55,7 +55,20 @@
 		"iterator": "cpp",
 		"memory_resource": "cpp",
 		"utility": "cpp",
-		"__verbose_abort": "cpp"
+		"__verbose_abort": "cpp",
+		"string_view": "cpp",
+		"__locale": "cpp",
+		"locale": "cpp",
+		"thread": "cpp",
+		"deque": "cpp",
+		"__tree": "cpp",
+		"charconv": "cpp",
+		"__string": "cpp",
+		"map": "cpp",
+		"list": "cpp",
+		"optional": "cpp",
+		"queue": "cpp",
+		"ios": "cpp"
 	},
 	"C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
 }
