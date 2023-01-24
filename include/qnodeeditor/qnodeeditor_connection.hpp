@@ -9,8 +9,8 @@ public:
     QNodeEditorConnection(QNodeEditorPort* from, QNodeEditorPort* to);
 
 public:
-    QNodeEditorPort* _from;
-    QNodeEditorPort* _to;
+    QNodeEditorPort* _from = nullptr;
+    QNodeEditorPort* _to = nullptr;
 };
 
 Q_DECLARE_METATYPE(QNodeEditorConnection*)

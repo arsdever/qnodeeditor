@@ -1,6 +1,8 @@
 set(SOURCES
     qnodeeditor_connection_graphics_object.cpp
     qnodeeditor_connection.cpp
+    qnodeeditor_layout_algorithm.cpp
+    qnodeeditor_flow_layout_algorithm.cpp
     qnodeeditor_node_graphics_object.cpp
     qnodeeditor_node.cpp
     qnodeeditor_port_graphics_object.cpp
